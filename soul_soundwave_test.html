@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>灵魂声波 · 隐藏乐迷人格图鉴</title>
+<style>
+  :root {
+    --bg-deep: #0D0D0F;
+    --bg-card: #151519;
+    --bg-card-hover: #1C1C22;
+    --gold: #D4A359;
+    --gold-dim: rgba(212, 163, 89, 0.25);
+    --gold-glow: rgba(212, 163, 89, 0.12);
+    --wine: #8C2D2D;
+    --text-main: #EAE6DF;
+    --text-sub: #9A958C;
+    --text-muted: #5C5852;
+    --border-subtle: rgba(234, 230, 223, 0.08);
+    --serif: "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.75;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* 胶片颗粒噪点与环境微光 */
+  .ambient-glow {
+    position: fixed;
+    top: -15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120vw;
+    height: 70vh;
+    background: radial-gradient(circle, rgba(212, 163, 89, 0.07) 0%, rgba(13, 13, 15, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: breathe 8s ease-in-out infinite;
+  }
+
+  .film-grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.06); }
+  }
+
+  .app-container {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 2;
+    padding: 28px 24px 48px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 页面切换控制 */
+  .view {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  .view.active {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ==================== 1. 首页样式 ==================== */
+  .home-header {
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  .archive-code {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 14px;
+  }
+
+  .main-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--text-main);
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+
+  .sub-title {
+    font-size: 13.5px;
+    color: var(--text-sub);
+    letter-spacing: 1px;
+    font-weight: 300;
+  }
+
+  /* 黑胶唱机交互区 */
+  .turntable-stage {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin: 36px auto 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 纯净黑胶唱片 */
+  .vinyl-disc {
+    width: 256px;
+    height: 256px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at center,
+        transparent 0%,
+        transparent 28%,
+        rgba(255,255,255,0.03) 28.5%,
+        transparent 29%,
+        rgba(255,255,255,0.02) 38%,
+        transparent 38.5%,
+        rgba(255,255,255,0.03) 48%,
+        transparent 48.5%,
+        rgba(255,255,255,0.02) 58%,
+        transparent 58.5%,
+        rgba(255,255,255,0.03) 68%,
+        transparent 68.5%,
+        rgba(255,255,255,0.02) 78%,
+        transparent 78.5%,
+        rgba(255,255,255,0.03) 88%,
+        transparent 88.5%,
+        rgba(255,255,255,0.04) 97%,
+        #070708 100%
+      ),
+      conic-gradient(
+        from 35deg,
+        #111114 0deg,
+        #222227 42deg,
+        #0F0F12 90deg,
+        #1E1E23 145deg,
+        #0D0D10 215deg,
+        #232328 270deg,
+        #111114 360deg
+      );
+    box-shadow:
+      0 20px 50px rgba(0, 0, 0, 0.85),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .vinyl-disc.spinning {
+    animation: spinVinyl 6s linear infinite;
+  }
+
+  @keyframes spinVinyl {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* 唱片中心圆标（极简纯净） */
+  .vinyl-label {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #9E3333, #5E1B1B);
+    box-shadow:
+      inset 0 0 0 1px rgba(212, 163, 89, 0.35),
+      0 0 15px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .vinyl-label::before {
+    content: "33⅓ RPM";
+    font-size: 7px;
+    letter-spacing: 1px;
+    color: rgba(234, 230, 223, 0.65);
+    margin-bottom: 18px;
+  }
+
+  .vinyl-spindle {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #0D0D0F;
+    border: 1px solid rgba(212, 163, 89, 0.5);
+  }
+
+  /* 机械唱针组件（可交互） */
+  .tonearm-assembly {
+    position: absolute;
+    top: -6px;
+    right: 6px;
+    width: 84px;
+    height: 195px;
+    cursor: pointer;
+    z-index: 5;
+    transform-origin: 54px 28px;
+    transform: rotate(-28deg);
+    transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .tonearm-assembly.dropped {
+    transform: rotate(-6deg);
+  }
+
+  .tonearm-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(-4px 8px 10px rgba(0, 0, 0, 0.75));
+  }
+
+  .needle-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    margin-bottom: 32px;
+    transition: color 0.3s ease;
+  }
+
+  .needle-hint span {
+    color: var(--gold);
+    opacity: 0.85;
+  }
+
+  .home-footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 16px 24px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--serif);
+    font-size: 15px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .btn-primary:hover, .btn-primary:active {
+    background: var(--gold-glow);
+    box-shadow: 0 0 24px rgba(212, 163, 89, 0.15);
+  }
+
+  .meta-note {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* ==================== 2. 答题页样式 ==================== */
+  .quiz-top {
+    margin-bottom: 36px;
+  }
+
+  .quiz-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .part-tag {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    opacity: 0.85;
+  }
+
+  .q-counter {
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--text-sub);
+    letter-spacing: 1px;
+  }
+
+  .q-counter strong {
+    color: var(--text-main);
+    font-weight: 500;
+  }
+
+  /* 调音台频率刻度进度条 */
+  .tuner-track {
+    width: 100%;
+    height: 14px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .tuner-ticks {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      to right,
+      rgba(234, 230, 223, 0.14) 0px,
+      rgba(234, 230, 223, 0.14) 1px,
+      transparent 1px,
+      transparent 10px
+    );
+    height: 6px;
+    top: 4px;
+  }
+
+  .tuner-bar-bg {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    position: relative;
+  }
+
+  .tuner-bar-fill {
+    height: 100%;
+    width: 3.33%;
+    background: var(--gold);
+    box-shadow: 0 0 10px var(--gold);
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+  }
+
+  .tuner-bar-fill::after {
+    content: "";
+    position: absolute;
+    right: -3px;
+    top: -4px;
+    width: 6px;
+    height: 10px;
+    background: var(--gold);
+    border-radius: 1px;
+  }
+
+  .question-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .question-stage.fade-out {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  .question-text {
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 1.7;
+    color: var(--text-main);
+    font-weight: 500;
+    margin-bottom: 34px;
+    letter-spacing: 0.5px;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .option-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 18px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+  }
+
+  .option-card:hover {
+    background: var(--bg-card-hover);
+    border-color: rgba(212, 163, 89, 0.3);
+  }
+
+  .option-card.selected {
+    background: rgba(212, 163, 89, 0.08);
+    border-color: var(--gold);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .opt-letter {
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--gold);
+    opacity: 0.75;
+    padding-top: 2px;
+    min-width: 16px;
+  }
+
+  .option-card.selected .opt-letter {
+    opacity: 1;
+    font-weight: 600;
+  }
+
+  .opt-text {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text-main);
+    opacity: 0.92;
+  }
+
+  .quiz-nav {
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-prev {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: color 0.2s ease;
+  }
+
+  .btn-prev:hover:not(:disabled) {
+    color: var(--text-sub);
+  }
+
+  .btn-prev:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ==================== 3. 结果海报页样式 ==================== */
+  .result-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* 3:4 截图友好海报卡片 */
+  .poster-card {
+    width: 100%;
+    background: linear-gradient(165deg, #16161B 0%, #0E0E11 100%);
+    border: 1px solid rgba(212, 163, 89, 0.25);
+    padding: 34px 26px 32px;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+    margin-bottom: 24px;
+  }
+
+  /* 四角微细金属装饰角标 */
+  .poster-card::before, .poster-card::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-color: var(--gold);
+    border-style: solid;
+    opacity: 0.5;
+  }
+  .poster-card::before { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+  .poster-card::after { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+  .poster-top-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10.5px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 26px;
+  }
+
+  .poster-no {
+    color: var(--gold);
+    font-family: var(--serif);
+  }
+
+  .result-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+
+  .result-title-group {
+    flex: 1;
+  }
+
+  .result-kicker {
+    font-size: 11.5px;
+    color: var(--text-sub);
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
+  .result-persona {
+    font-family: var(--serif);
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--text-main);
+    letter-spacing: 1.5px;
+    line-height: 1.35;
+  }
+
+  /* 迷你装饰黑胶 */
+  .mini-vinyl {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: conic-gradient(from 45deg, #121215, #26262C, #101013, #242429, #121215);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 0 6px 16px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: spinVinyl 10s linear infinite;
+  }
+
+  .mini-vinyl-core {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--wine);
+    border: 1px solid rgba(212, 163, 89, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mini-vinyl-core::after {
+    content: "";
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #0D0D0F;
+  }
+
+  /* 灵魂金句引用块 */
+  .soul-quote {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--gold);
+    padding: 16px 0 16px 16px;
+    border-left: 1.5px solid var(--gold);
+    margin-bottom: 26px;
+    letter-spacing: 0.5px;
+  }
+
+  .result-desc {
+    font-size: 13.8px;
+    line-height: 1.9;
+    color: var(--text-main);
+    opacity: 0.88;
+    margin-bottom: 28px;
+    text-align: justify;
+  }
+
+  /* 四维指标条 */
+  .dimensions-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .dim-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11.5px;
+  }
+
+  .dim-label {
+    width: 82px;
+    color: var(--text-sub);
+    letter-spacing: 0.5px;
+  }
+
+  .dim-track {
+    flex: 1;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.07);
+    position: relative;
+  }
+
+  .dim-fill {
+    height: 100%;
+    background: var(--gold);
+    opacity: 0.85;
+  }
+
+  .dim-val {
+    width: 32px;
+    text-align: right;
+    color: var(--text-muted);
+    font-family: var(--serif);
+  }
+
+  /* 隐藏天赋与搭子 */
+  .poster-extras {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .extra-item h4 {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+
+  .extra-item p {
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--text-main);
+    line-height: 1.5;
+  }
+
+  .poster-watermark {
+    margin-top: 26px;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+
+  .result-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .screenshot-tip {
+    font-size: 12px;
+    color: var(--text-sub);
+    letter-spacing: 1px;
+  }
+
+  .btn-restart {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-sub);
+    font-size: 13px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .btn-restart:hover {
+    border-color: var(--gold-dim);
+    color: var(--text-main);
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient-glow"></div>
+<div class="film-grain"></div>
+
+<main class="app-container">
+
+  <!-- ==================== 1. 测试首页 ==================== -->
+  <section id="view-home" class="view active">
+    <header class="home-header">
+      <div class="archive-code">SOUNDWAVE ARCHIVE · VOL.01</div>
+      <h1 class="main-title">灵魂声波</h1>
+      <p class="sub-title">在耳机与现场之间，辨认你的隐藏乐迷人格</p>
+    </header>
+
+    <div class="turntable-stage">
+      <!-- 纯净黑胶盘面 -->
+      <div class="vinyl-disc" id="vinyl-disc" title="点击启动唱盘">
+        <div class="vinyl-label">
+          <div class="vinyl-spindle"></div>
+        </div>
+      </div>
+
+      <!-- 可交互机械唱针 -->
+      <div class="tonearm-assembly" id="tonearm" title="拨动唱针开始测试">
+        <svg class="tonearm-svg" viewBox="0 0 90 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 底座轴承 -->
+          <circle cx="58" cy="30" r="18" fill="#1C1C21" stroke="#D4A359" stroke-width="1" stroke-opacity="0.45"/>
+          <circle cx="58" cy="30" r="9" fill="#2A2A32" stroke="#8C857B" stroke-width="0.8"/>
+          <circle cx="58" cy="30" r="3" fill="#D4A359"/>
+          <!-- 配重块 -->
+          <rect x="50" y="4" width="16" height="12" rx="2" fill="#26262D" stroke="#D4A359" stroke-width="0.8" stroke-opacity="0.6"/>
+          <!-- 金属S型唱臂 -->
+          <path d="M58 30 L58 95 C58 115, 44 128, 42 152 L39 175" stroke="url(#armGrad)" stroke-width="3.2" stroke-linecap="round"/>
+          <!-- 唱头壳 (Headshell) -->
+          <g transform="translate(39, 175) rotate(16)">
+            <rect x="-5" y="0" width="10" height="18" rx="1.5" fill="#1E1E24" stroke="#D4A359" stroke-width="1"/>
+            <line x1="6" y1="5" x2="11" y2="3" stroke="#D4A359" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="0" cy="19" r="1.5" fill="#D4A359"/>
+          </g>
+          <defs>
+            <linearGradient id="armGrad" x1="58" y1="30" x2="39" y2="175" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#B8B2A8"/>
+              <stop offset="50%" stop-color="#EAE6DF"/>
+              <stop offset="100%" stop-color="#9A958C"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+    <div class="needle-hint" id="needle-hint">轻触 <span>唱针</span> 落入音轨，开启聆听</div>
+
+    <footer class="home-footer">
+      <button class="btn-primary" id="btn-start">开始声波测试</button>
+      <div class="meta-note">共 30 道生活化场景题 · 约需 3 分钟</div>
+    </footer>
+  </section>
+
+  <!-- ==================== 2. 题目作答页 ==================== -->
+  <section id="view-quiz" class="view">
+    <div class="quiz-top">
+      <div class="quiz-meta">
+        <span class="part-tag" id="part-tag">PART I · 聆听介质</span>
+        <span class="q-counter"><strong id="q-current">01</strong> / 30</span>
+      </div>
+      <div class="tuner-track">
+        <div class="tuner-ticks"></div>
+        <div class="tuner-bar-bg">
+          <div class="tuner-bar-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-stage" id="question-stage">
+      <h2 class="question-text" id="question-text">题目加载中...</h2>
+      <div class="options-list" id="options-list"></div>
+    </div>
+
+    <div class="quiz-nav">
+      <button class="btn-prev" id="btn-prev" disabled>← 返回上一题</button>
+      <span class="meta-note" style="opacity: 0.5;">凭第一直觉作答</span>
+    </div>
+  </section>
+
+  <!-- ==================== 3. 结果海报页 ==================== -->
+  <section id="view-result" class="view">
+    <div class="result-wrapper">
+      <article class="poster-card" id="poster-card">
+        <div class="poster-top-meta">
+          <span>SOUNDWAVE PERSONA</span>
+          <span class="poster-no" id="res-no">NO.01 / 08</span>
+        </div>
+
+        <div class="result-header-row">
+          <div class="result-title-group">
+            <div class="result-kicker">你的隐藏乐迷人格是</div>
+            <h2 class="result-persona" id="res-title">实体唱片守夜人</h2>
+          </div>
+          <div class="mini-vinyl">
+            <div class="mini-vinyl-core"></div>
+          </div>
+        </div>
+
+        <blockquote class="soul-quote" id="res-quote">
+          “流媒体只是借听，把唱片握在手里，才算真正拥有了这段时间。”
+        </blockquote>
+
+        <p class="result-desc" id="res-desc"></p>
+
+        <div class="dimensions-box" id="res-dims"></div>
+
+        <div class="poster-extras">
+          <div class="extra-item">
+            <h4>隐藏听觉天赋</h4>
+            <p id="res-talent">细节捕手</p>
+          </div>
+          <div class="extra-item">
+            <h4>契合听歌搭子</h4>
+            <p id="res-partner">复古黄金年代漫游者</p>
+          </div>
+        </div>
+
+        <div class="poster-watermark">灵魂声波 · 乐迷人格图鉴</div>
+      </article>
+
+      <div class="result-actions">
+        <div class="screenshot-tip">长按或直接手机截屏，保存你的专属唱片封面</div>
+        <button class="btn-restart" id="btn-restart">重新拨动唱针测试</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// 4个核心维度：
+// ritual: 媒介与仪式感
+// live: 现场投入与社交能量
+// lyric: 歌词叙事与情绪内省
+// niche: 审美独立与小众挖掘
+
+const QUESTIONS = [
+  // PART I · 媒介、设备与聆听习惯 (1-6)
+  {
+    part: "PART I · 聆听介质",
+    q: "深夜戴上耳机准备听歌时，你最常做的动作是？",
+    opts: [
+      { text: "打开每日推荐或私人漫游，交由算法随机播放", s: { ritual: 0, live: 1, lyric: 1, niche: 0 } },
+      { text: "点开自己按情绪或场景细致分类的自建歌单", s: { ritual: 1, live: 0, lyric: 2, niche: 1 } },
+      { text: "选出一张完整专辑，从第一首按顺序听到最后一首", s: { ritual: 2, live: 0, lyric: 1, niche: 2 } },
+      { text: "拿出一张实体唱片或打开本地无损曲库，调好设备后再闭眼", s: { ritual: 3, live: 0, lyric: 0, niche: 2 } }
+    ]
+  },
+  {
+    part: "PART I · 聆听介质",
+    q: "如果只能保留一种听歌介质或设备，你的选择是？",
+    opts: [
+      { text: "一台音质扎实的便携播放器与有线耳机，追求声音的纯粹度", s: { ritual: 2, live: 0, lyric: 1, niche: 2 } },
+      { text: "一台黑胶唱机或CD机，享受物理介质的运转与仪式感", s: { ritual: 3, live: 0, lyric: 1, niche: 1 } },
+      { text: "手机与降噪无线耳机，随时随地隔绝外界噪音最为重要", s: { ritual: 0, live: 0, lyric: 2, niche: 1 } },
+      { text: "桌面音响系统，让声音自然地铺满整个房间", s: { ritual: 1, live: 2, lyric: 0, niche: 1 } }
+    ]
+  },
+  {
+    part: "PART I · 聆听介质",
+    q: "遇到一首瞬间击中你的歌曲，你通常会怎么做？",
+    opts: [
+      { text: "连续单曲循环数十遍，直到把里面的情绪彻底消耗完", s: { ritual: 1, live: 1, lyric: 3, niche: 0 } },
+      { text: "翻开评论区，看看陌生人是否写下了相似的经历", s: { ritual: 0, live: 1, lyric: 2, niche: 0 } },
+      { text: "顺藤摸瓜去查阅这支乐队的创作背景、成员履历与冷门作品", s: { ritual: 2, live: 1, lyric: 0, niche: 3 } },
+      { text: "默默收藏进私密歌单，很少主动向别人提起", s: { ritual: 1, live: 0, lyric: 2, niche: 2 } }
+    ]
+  },
+  {
+    part: "PART I · 聆听介质",
+    q: "你如何看待购买实体唱片（CD或黑胶）这件事？",
+    opts: [
+      { text: "带有某种不可替代的仪式感，翻看内页歌词本才算真正拥有", s: { ritual: 3, live: 0, lyric: 2, niche: 1 } },
+      { text: "主要是为了支持喜欢的创作者，买回来更多作为静物收藏", s: { ritual: 2, live: 1, lyric: 0, niche: 2 } },
+      { text: "没必要，流媒体既方便携带又不占空间", s: { ritual: 0, live: 2, lyric: 1, niche: 0 } },
+      { text: "只有极少数经得起时间检验的经典专辑，才值得入手收藏", s: { ritual: 2, live: 0, lyric: 1, niche: 1 } }
+    ]
+  },
+  {
+    part: "PART I · 聆听介质",
+    q: "听一张新专辑时，你对“曲序”的在意程度是？",
+    opts: [
+      { text: "非常在意，必须按创作者编排的顺序完整听完第一遍", s: { ritual: 3, live: 0, lyric: 1, niche: 2 } },
+      { text: "无所谓，习惯直接点开播放量最高的那几首热门曲目", s: { ritual: 0, live: 2, lyric: 1, niche: 0 } },
+      { text: "习惯开启随机播放，喜欢未知的跳跃感", s: { ritual: 0, live: 1, lyric: 0, niche: 1 } },
+      { text: "会先听前奏，如果前十秒没有吸引到自己就会直接切歌", s: { ritual: 1, live: 1, lyric: 0, niche: 1 } }
+    ]
+  },
+  {
+    part: "PART I · 聆听介质",
+    q: "整理个人歌单时，你的习惯更接近哪种？",
+    opts: [
+      { text: "极度克制，每个歌单都有严格的主题与情绪边界，定期清理", s: { ritual: 2, live: 0, lyric: 2, niche: 2 } },
+      { text: "庞大的杂货铺，几千首歌全部堆在一个“我喜欢的音乐”里", s: { ritual: 0, live: 2, lyric: 0, niche: 1 } },
+      { text: "按时间线归档，每个季节或人生阶段都有专属的记录歌单", s: { ritual: 2, live: 0, lyric: 3, niche: 0 } },
+      { text: "很少自己建歌单，习惯直接收藏别人整理好的精选集", s: { ritual: 0, live: 1, lyric: 1, niche: 0 } }
+    ]
+  },
+
+  // PART II · 演出现场与空间姿态 (7-11)
+  {
+    part: "PART II · 现场姿态",
+    q: "来到心仪音乐人的演出现场，检票进场后你通常会站在哪个位置？",
+    opts: [
+      { text: "尽量靠近前排栏杆，渴望最直接的声压冲击与眼神交流", s: { ritual: 0, live: 3, lyric: 1, niche: 0 } },
+      { text: "调音台附近，这里的声场最均衡，也方便观察乐手的配合", s: { ritual: 2, live: 1, lyric: 0, niche: 2 } },
+      { text: "场地边缘或吧台附近，保持舒适的社交距离，安静聆听", s: { ritual: 1, live: 0, lyric: 2, niche: 2 } },
+      { text: "跟着现场的人流自然移动，不刻意固定在某个角落", s: { ritual: 0, live: 2, lyric: 1, niche: 0 } }
+    ]
+  },
+  {
+    part: "PART II · 现场姿态",
+    q: "演出进行中，旁边有人一直在举着手机全程录像，你的内心反应是？",
+    opts: [
+      { text: "感到有些扫兴，屏幕光亮和遮挡会破坏现场的沉浸感", s: { ritual: 2, live: 2, lyric: 1, niche: 1 } },
+      { text: "能够理解，自己遇到特别喜欢的段落也会短暂记录几秒", s: { ritual: 1, live: 1, lyric: 1, niche: 0 } },
+      { text: "替对方感到遗憾，花钱买了门票却选择透过屏幕观看", s: { ritual: 2, live: 2, lyric: 0, niche: 2 } },
+      { text: "只要不影响我的视线和站立空间，便不会去在意", s: { ritual: 0, live: 0, lyric: 1, niche: 1 } }
+    ]
+  },
+  {
+    part: "PART II · 现场姿态",
+    q: "演出散场后走在微凉的夜风里，耳鸣尚未完全消退，你此刻的思绪往往是？",
+    opts: [
+      { text: "刚才某段现场改编极具张力，回去想立刻找来原版对比细节", s: { ritual: 2, live: 1, lyric: 0, niche: 3 } },
+      { text: "刚刚在人群中一同合唱的瞬间，让人短暂忘记了现实的疲惫", s: { ritual: 0, live: 3, lyric: 2, niche: 0 } },
+      { text: "喧嚣落幕，意识到明天又要回到按部就班的日常秩序中", s: { ritual: 1, live: 0, lyric: 3, niche: 1 } },
+      { text: "开始留意他们接下来的巡演日程，盘算下一次见面的时间", s: { ritual: 1, live: 3, lyric: 0, niche: 1 } }
+    ]
+  },
+  {
+    part: "PART II · 现场姿态",
+    q: "对于“一个人去看演出”这件事，你的态度是？",
+    opts: [
+      { text: "再正常不过，甚至觉得一个人看演出更自由、更专注", s: { ritual: 1, live: 2, lyric: 2, niche: 2 } },
+      { text: "也可以接受，但如果有懂行的朋友同行会更尽兴", s: { ritual: 1, live: 2, lyric: 1, niche: 1 } },
+      { text: "很少独自前往，习惯在热闹的氛围里与熟人分享情绪", s: { ritual: 0, live: 2, lyric: 1, niche: 0 } },
+      { text: "比起去现场，我更偏爱一个人待在家里戴耳机听录音室版本", s: { ritual: 3, live: 0, lyric: 2, niche: 1 } }
+    ]
+  },
+  {
+    part: "PART II · 现场姿态",
+    q: "在一场音乐节里，不同舞台同时有演出，你的选择逻辑是？",
+    opts: [
+      { text: "提前做好精确的时间表，严格按计划赶场，不错过任何目标", s: { ritual: 2, live: 2, lyric: 0, niche: 1 } },
+      { text: "只看最想看的那一两支乐队，其余时间在草地上晒太阳发呆", s: { ritual: 1, live: 1, lyric: 2, niche: 0 } },
+      { text: "随处闲逛，哪边传来的声音吸引人就往哪个舞台走", s: { ritual: 0, live: 2, lyric: 1, niche: 1 } },
+      { text: "避开人流最密集的主舞台，专门去小舞台发掘陌生面孔", s: { ritual: 1, live: 1, lyric: 0, niche: 3 } }
+    ]
+  },
+
+  // PART III · 审美取向与独立思考 (12-17)
+  {
+    part: "PART III · 审美取向",
+    q: "一首歌最先打动你的，通常是哪个部分？",
+    opts: [
+      { text: "极具张力的前奏、鼓点，或是一段克制而精准的器乐独奏", s: { ritual: 1, live: 3, lyric: 0, niche: 1 } },
+      { text: "某句恰如其分地剖开你当下心境的歌词", s: { ritual: 0, live: 0, lyric: 3, niche: 0 } },
+      { text: "整首歌营造出的时代空气感，仿佛将人拉回某段旧时光", s: { ritual: 3, live: 0, lyric: 2, niche: 1 } },
+      { text: "独特的采样、实验性的编曲结构，或意料之外的和声走向", s: { ritual: 1, live: 1, lyric: 0, niche: 3 } }
+    ]
+  },
+  {
+    part: "PART III · 审美取向",
+    q: "当你发现曾经偏爱的一支小众乐队突然在大众平台走红，你的第一反应是？",
+    opts: [
+      { text: "替他们感到高兴，好的作品理应被更多人听见，乐队也能借此生存", s: { ritual: 1, live: 2, lyric: 1, niche: 0 } },
+      { text: "产生一种“私藏领地被闯入”的微妙失落，甚至会减少播放频率", s: { ritual: 1, live: 0, lyric: 1, niche: 3 } },
+      { text: "毫无波澜，外界的喧嚣与耳机里的声音本身并无关系", s: { ritual: 2, live: 0, lyric: 2, niche: 1 } },
+      { text: "会重新翻出他们早期的独立发行作品，怀念最初的粗糙质感", s: { ritual: 3, live: 0, lyric: 1, niche: 3 } }
+    ]
+  },
+  {
+    part: "PART III · 审美取向",
+    q: "如果需要向一位刚认识的朋友推荐几首歌，你的做法是？",
+    opts: [
+      { text: "谨慎试探对方的审美偏好，担心拿出珍藏曲目却得不到共鸣", s: { ritual: 1, live: 0, lyric: 3, niche: 2 } },
+      { text: "直接分享一个涵盖多种流派的歌单，展现真实的听歌广度", s: { ritual: 0, live: 2, lyric: 0, niche: 1 } },
+      { text: "挑选几首旋律流畅、接受度较高的作品，避免产生尴尬", s: { ritual: 0, live: 1, lyric: 1, niche: 0 } },
+      { text: "刻意选几首冷门但质感极佳的曲子，作为检验彼此契合度的试金石", s: { ritual: 2, live: 0, lyric: 1, niche: 3 } }
+    ]
+  },
+  {
+    part: "PART III · 审美取向",
+    q: "你如何评价一首“旋律简单甚至有些粗糙，但情感极其真诚”的作品？",
+    opts: [
+      { text: "非常珍贵，技术可以打磨，但创作瞬间的真诚无法复制", s: { ritual: 1, live: 2, lyric: 3, niche: 1 } },
+      { text: "偶尔听听很有味道，但长期来看还是更看重编曲与制作水准", s: { ritual: 2, live: 0, lyric: 0, niche: 2 } },
+      { text: "只要能触动情绪就是好作品，不在乎制作是否精良", s: { ritual: 0, live: 2, lyric: 2, niche: 0 } },
+      { text: "容易产生审美疲劳，更偏爱结构复杂、耐得住反复推敲的音乐", s: { ritual: 2, live: 0, lyric: 0, niche: 3 } }
+    ]
+  },
+  {
+    part: "PART III · 审美取向",
+    q: "面对音乐软件里“年度听歌报告”的各项数据，你的态度是？",
+    opts: [
+      { text: "觉得有些有趣，像是一份客观记录过去一年情绪轨迹的档案", s: { ritual: 1, live: 1, lyric: 2, niche: 0 } },
+      { text: "认为算法只能统计播放次数，无法真正理解我最看重的那几首歌", s: { ritual: 2, live: 0, lyric: 2, niche: 1 } },
+      { text: "会留意“小众度”或“曲风跨度”这类能体现个人特质的标签", s: { ritual: 0, live: 1, lyric: 0, niche: 3 } },
+      { text: "很少点开，听歌是私人的事，不需要用数据向别人展示", s: { ritual: 2, live: 0, lyric: 1, niche: 2 } }
+    ]
+  },
+  {
+    part: "PART III · 审美取向",
+    q: "走进一家陌生的独立唱片店，你的浏览习惯是？",
+    opts: [
+      { text: "径直走向自己最熟悉的流派分类架，有目的地淘选", s: { ritual: 3, live: 0, lyric: 0, niche: 2 } },
+      { text: "哪张专辑的封面视觉最独特，就先抽出哪一张来看", s: { ritual: 2, live: 1, lyric: 1, niche: 2 } },
+      { text: "戴上店里的试听耳机，顺着店员的推荐一张张耐心聆听", s: { ritual: 2, live: 1, lyric: 1, niche: 1 } },
+      { text: "放慢脚步感受店里的空间陈设与旧书纸张气味，不强求一定买到什么", s: { ritual: 2, live: 0, lyric: 2, niche: 0 } }
+    ]
+  },
+
+  // PART IV · 情绪边界与生活投射 (18-30)
+  {
+    part: "PART IV · 情绪边界",
+    q: "哪种时刻，你对音乐的依赖感会达到顶峰？",
+    opts: [
+      { text: "独自搭乘夜班车或长途步行时，需要用声音隔绝外界的嘈杂", s: { ritual: 1, live: 0, lyric: 2, niche: 1 } },
+      { text: "内心积压了过多情绪，需要依靠强烈的节奏与声浪获得释放", s: { ritual: 0, live: 3, lyric: 1, niche: 0 } },
+      { text: "深夜失眠，希望有一个安静、懂事的声音陪伴自己度过空白时间", s: { ritual: 1, live: 0, lyric: 3, niche: 0 } },
+      { text: "阅读、写作或思考问题时，需要稳定且不抢戏的背景音保持专注", s: { ritual: 1, live: 0, lyric: 0, niche: 2 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "如果把你目前的人生阶段拍成一部电影，你希望它的配乐基调是？",
+    opts: [
+      { text: "带着胶片颗粒感的经典摇滚，有锋芒也有温度", s: { ritual: 3, live: 2, lyric: 1, niche: 1 } },
+      { text: "宏大、留白极多的器乐后摇，情绪在克制中缓缓推进", s: { ritual: 1, live: 0, lyric: 1, niche: 3 } },
+      { text: "慵懒、松弛、带有雨天咖啡馆气息的爵士或独立民谣", s: { ritual: 2, live: 0, lyric: 2, niche: 1 } },
+      { text: "节奏冷静、充满未知变数的电子氛围音乐", s: { ritual: 0, live: 1, lyric: 0, niche: 3 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "当你处于极度低落或疲惫的状态时，你会选择听什么？",
+    opts: [
+      { text: "同样悲伤或压抑的歌，以毒攻毒，在共鸣中把情绪彻底释放", s: { ritual: 1, live: 1, lyric: 3, niche: 0 } },
+      { text: "节奏轻快、明亮的曲子，强行把自己的思绪从泥潭里拉出来", s: { ritual: 0, live: 2, lyric: 1, niche: 0 } },
+      { text: "没有任何歌词的纯音乐，避免任何语言对大脑造成额外负担", s: { ritual: 1, live: 0, lyric: 0, niche: 2 } },
+      { text: "什么都不听，此时此刻彻底的安静才是最好的修复", s: { ritual: 2, live: 0, lyric: 1, niche: 1 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "你如何看待“听歌品味能否反映一个人的真实性格”？",
+    opts: [
+      { text: "高度认同，一个人长期循环的旋律与歌词，就是他灵魂的缩影", s: { ritual: 1, live: 1, lyric: 3, niche: 1 } },
+      { text: "只能反映一部分，很多人只是把音乐当作消遣或背景音", s: { ritual: 0, live: 1, lyric: 0, niche: 2 } },
+      { text: "审美是流动的，不同年龄段喜欢的音乐往往截然不同", s: { ritual: 1, live: 1, lyric: 1, niche: 1 } },
+      { text: "比起曲风本身，一个人“听歌的方式”更能暴露他的性格底色", s: { ritual: 3, live: 0, lyric: 1, niche: 2 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "在社交场合中，如果听到有人对你的偶像或喜欢的乐队发表外行评价，你会？",
+    opts: [
+      { text: "懒得争辩，微笑带过，清楚彼此不在同一个语境里", s: { ritual: 1, live: 0, lyric: 1, niche: 3 } },
+      { text: "忍不住礼貌地纠正对方的事实错误，科普真正的背景", s: { ritual: 2, live: 2, lyric: 0, niche: 1 } },
+      { text: "心里会有些不快，在心里默默给对方减分", s: { ritual: 1, live: 0, lyric: 2, niche: 2 } },
+      { text: "觉得无所谓，每个人的听觉体验本就主观，没必要强求一致", s: { ritual: 0, live: 1, lyric: 1, niche: 0 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "假如你要去一座无人岛生活一年，只能带一张专辑，你的挑选标准是？",
+    opts: [
+      { text: "编曲层次极其丰富，听一百遍依然能发现新细节的作品", s: { ritual: 2, live: 0, lyric: 0, niche: 3 } },
+      { text: "陪伴自己走过人生重要低谷、承载了最多私人记忆的唱片", s: { ritual: 2, live: 0, lyric: 3, niche: 0 } },
+      { text: "氛围舒缓、贴近自然声响，适合在海边发呆的纯器乐专辑", s: { ritual: 1, live: 0, lyric: 0, niche: 2 } },
+      { text: "充满生命力与躁动感，能随时给自己提供精神能量的摇滚专辑", s: { ritual: 1, live: 3, lyric: 1, niche: 0 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "听到一首几十年前的老歌时，最常涌上心头的感受是？",
+    opts: [
+      { text: "感叹那个黄金年代的创作生命力，觉得如今的音乐少了些纯粹", s: { ritual: 3, live: 1, lyric: 1, niche: 1 } },
+      { text: "好奇当时的创作者与听众正处于怎样的社会氛围之中", s: { ritual: 2, live: 0, lyric: 2, niche: 2 } },
+      { text: "触发某种近似“怀旧”的温柔情绪，尽管自己并未经历过那个年代", s: { ritual: 2, live: 0, lyric: 3, niche: 0 } },
+      { text: "纯粹欣赏它的旋律美感，好音乐本身就不会被时间淘汰", s: { ritual: 1, live: 1, lyric: 1, niche: 1 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "你在深夜听歌时，是否经常盯着歌词本或屏幕上的歌词发呆？",
+    opts: [
+      { text: "经常如此，对文字极度敏感，甚至会把喜欢的歌词抄写下来", s: { ritual: 2, live: 0, lyric: 3, niche: 0 } },
+      { text: "偶尔会看，但大部分时间还是把人声当作一种乐器来听", s: { ritual: 1, live: 1, lyric: 0, niche: 2 } },
+      { text: "听外文歌时几乎不看翻译，更享受语言本身的音节韵律", s: { ritual: 1, live: 1, lyric: 0, niche: 2 } },
+      { text: "只有第一次听这首歌时会看一遍词，熟悉之后便不再关注", s: { ritual: 1, live: 1, lyric: 1, niche: 1 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "如果你拥有一家属于自己的小型咖啡馆或书店，店里的背景音乐会由谁决定？",
+    opts: [
+      { text: "全部由我自己亲自挑选并定期更换，这是店面灵魂的一部分", s: { ritual: 2, live: 0, lyric: 1, niche: 3 } },
+      { text: "根据不同时段的天气与客流变化，提前设定好对应的情绪歌单", s: { ritual: 1, live: 1, lyric: 2, niche: 1 } },
+      { text: "放一台黑胶唱机在角落，允许有品味的客人自己挑选唱片播放", s: { ritual: 3, live: 2, lyric: 0, niche: 1 } },
+      { text: "播放低调不打扰交谈的纯音乐，让音乐退居为纯粹的环境底色", s: { ritual: 0, live: 0, lyric: 0, niche: 2 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "对于“翻唱（Cover）”作品，你通常抱有怎样的态度？",
+    opts: [
+      { text: "偏爱原版，认为最初的创作语境与情绪张力是无法被复制的", s: { ritual: 3, live: 0, lyric: 1, niche: 1 } },
+      { text: "很欣赏那些大刀阔斧重构编曲、赋予老歌全新灵魂的翻唱", s: { ritual: 1, live: 1, lyric: 0, niche: 3 } },
+      { text: "只要唱功扎实、听感舒适，原唱还是翻唱并不重要", s: { ritual: 0, live: 1, lyric: 1, niche: 0 } },
+      { text: "经常通过优秀的翻唱版本，再去反向考古冷门的原唱音乐人", s: { ritual: 2, live: 0, lyric: 1, niche: 2 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "当你在日常生活中偶然听到一家路边小店正在播放你极爱的冷门歌曲，你会？",
+    opts: [
+      { text: "脚步会不自觉放慢，心里产生一种“他乡遇故知”的隐秘雀跃", s: { ritual: 1, live: 0, lyric: 2, niche: 3 } },
+      { text: "忍不住多看几眼这家店，甚至想进去坐一会儿或和老板聊两句", s: { ritual: 1, live: 2, lyric: 1, niche: 2 } },
+      { text: "感到一丝意外，但很快恢复平静，继续走自己的路", s: { ritual: 1, live: 0, lyric: 1, niche: 1 } },
+      { text: "暗自感叹算法和网络已经把曾经的小众文化彻底普及了", s: { ritual: 2, live: 0, lyric: 0, niche: 3 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "你认为“好音乐”最核心的价值在于？",
+    opts: [
+      { text: "替那些不善言辞的人，精准地说出了他们内心深处的话", s: { ritual: 0, live: 0, lyric: 3, niche: 0 } },
+      { text: "打破日常生活的平庸与麻木，提供短暂的精神出逃", s: { ritual: 1, live: 3, lyric: 1, niche: 0 } },
+      { text: "记录某个时代的真实切片，成为对抗遗忘的艺术标本", s: { ritual: 3, live: 0, lyric: 1, niche: 1 } },
+      { text: "探索声音与美学的边界，带给人纯粹的听觉震撼", s: { ritual: 1, live: 1, lyric: 0, niche: 3 } }
+    ]
+  },
+  {
+    part: "PART IV · 情绪边界",
+    q: "音乐在你的整个生命里，最接近下面哪一种隐喻？",
+    opts: [
+      { text: "一座随时可以退回的避难所——现实太吵，耳机里才是安全屋", s: { ritual: 1, live: 0, lyric: 3, niche: 1 } },
+      { text: "一枚持续燃烧的燃料——没有节奏与律动，生活便失去张力", s: { ritual: 0, live: 3, lyric: 0, niche: 1 } },
+      { text: "一本没有锁的私人日记——每首歌都封存着某段具体的空气与记忆", s: { ritual: 3, live: 0, lyric: 2, niche: 0 } },
+      { text: "一面诚实的镜子——在音符的折射里，看清自己与世界的真实模样", s: { ritual: 1, live: 1, lyric: 1, niche: 3 } }
+    ]
+  }
+];
+
+// 8大人格档案库
+const PERSONAS = [
+  {
+    id: "archivist",
+    no: "NO.01 / 08",
+    title: "实体唱片守夜人",
+    quote: "“流媒体只是借听，把唱片握在手里，才算真正拥有了这段时间。”",
+    desc: "在万物皆可速食的时代，你依然固执地保留着对物理媒介与完整叙事的敬畏。你享受拆开塑封、翻阅内页歌词本、按曲序从头听到尾的专注时刻。对你而言，音乐不是廉价的背景噪音，而是需要腾出整块时间去郑重对待的私人仪式。",
+    talent: "全曲序沉浸感知力",
+    partner: "复古黄金年代漫游者",
+    match: (d) => d.ritual >= 52 && d.niche >= 35
+  },
+  {
+    id: "frontrow",
+    no: "NO.02 / 08",
+    title: "Livehouse 前排永动机",
+    quote: "“耳机里的声场再好，也抵不过现场音箱震动胸腔的那一秒。”",
+    desc: "你是天生的现场动物，对鼓点、贝斯线与失真吉他有着本能的生理反应。比起隔着屏幕冷静分析，你更相信汗水、声浪与人群合唱带来的真实生命力。现实生活里的克制与疲惫，总能在演出现场的前三排彻底清零。",
+    talent: "高浓度声浪共情力",
+    partner: "跨界杂食星人",
+    match: (d) => d.live >= 42
+  },
+  {
+    id: "anatomist",
+    no: "NO.03 / 08",
+    title: "深夜歌词解剖师",
+    quote: "“别人听的是旋律起伏，我听的是另一个灵魂写给我的秘密信件。”",
+    desc: "你拥有极度细腻的文字直觉，总能从一句看似平淡的歌词里读出整部电影的悲欢。你习惯把某首歌与某段具体的深夜、某条走过的街道紧紧绑定。你的歌单就是一部加密的私人编年史，每一首单曲循环背后都藏着未说出口的心事。",
+    talent: "字句隐喻破译直觉",
+    partner: "氛围感白噪音患者",
+    match: (d) => d.lyric >= 48 && d.live < 35
+  },
+  {
+    id: "digger",
+    no: "NO.04 / 08",
+    title: "独立音乐挖掘机",
+    quote: "“我不是讨厌流行，我只是习惯了在无人问津的角落里先一步发现光。”",
+    desc: "你对算法投喂的排行榜天然保持警惕，热衷于在冷门厂牌、早期Demo与评论不过百的角落里淘金。你有极高的审美洁癖与独立判断力，一旦私藏的宝藏乐队在大众平台爆火，你反而会生出一种“领地被闯入”的微妙失落。",
+    talent: "冷门神专雷达嗅觉",
+    partner: "角落冷静品鉴家",
+    match: (d) => d.niche >= 48 && d.ritual < 52
+  },
+  {
+    id: "connoisseur",
+    no: "NO.05 / 08",
+    title: "角落冷静品鉴家",
+    quote: "“狂欢是别人的，而我在音符的缝隙里，听见了创作者的野心。”",
+    desc: "哪怕置身于最躁动的演出现场，你也习惯站在调音台附近或场地边缘，保持着清醒的观察者姿态。你敏锐地捕捉着编曲的层次、乐手的配合以及和声的微妙转调。比起盲目崇拜，你更懂得如何以近乎建筑学的眼光去欣赏一件声音作品。",
+    talent: "编曲结构透视眼",
+    partner: "独立音乐挖掘机",
+    match: (d) => d.niche >= 42 && d.lyric < 38
+  },
+  {
+    id: "retro",
+    no: "NO.06 / 08",
+    title: "复古黄金年代漫游者",
+    quote: "“最好的时代或许已经过去，但好在唱片替我们把当时的空气封存了下来。”",
+    desc: "你的精神时钟似乎停留在某个充满胶片颗粒感的黄金年代。你偏爱老摇滚、经典爵士或旧日民谣里那种未经过度修饰的粗糙真诚。在如今精致却趋同的工业化音乐面前，你总能从几十年前的模拟录音里找到最踏实的慰藉。",
+    talent: "跨时代空气感捕捉",
+    partner: "实体唱片守夜人",
+    match: (d) => d.ritual >= 46 && d.lyric >= 40
+  },
+  {
+    id: "ambient",
+    no: "NO.07 / 08",
+    title: "氛围感白噪音患者",
+    quote: "“戴上降噪耳机的那一刻，我才真正从拥挤的世界里赎回了自己。”",
+    desc: "对你而言，音乐最温柔的功能是构建一座随身携带的结界。无论是夜班公交、雨天独行还是伏案工作，耳机里的声音都是你与喧嚣现实之间的缓冲带。你不追求用音乐去向谁证明品味，只希望它能安静、得体地接住你所有的独处时光。",
+    talent: "私人精神结界构建",
+    partner: "深夜歌词解剖师",
+    match: (d) => d.live < 30 && d.ritual < 46
+  },
+  {
+    id: "omnivore",
+    no: "NO.08 / 08",
+    title: "跨界杂食星人",
+    quote: "“真正的自由，是不被任何一种标签和曲风定义自己的情绪。”",
+    desc: "你的歌单有着令人惊叹的包容度，前一秒还在听厚重的失真摇滚，下一秒就能无缝切入市井民谣或古典小品。你从不被流派偏见或圈层鄙视链束缚，只以当下的真实体感作为唯一标准——好听与真诚，永远高于一切标签。",
+    talent: "无边界情绪切换力",
+    partner: "Livehouse 前排永动机",
+    match: () => true
+  }
+];
+
+// 状态管理
+let currentIdx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let isTransitioning = false;
+
+// DOM 引用
+const viewHome = document.getElementById("view-home");
+const viewQuiz = document.getElementById("view-quiz");
+const viewResult = document.getElementById("view-result");
+
+const tonearm = document.getElementById("tonearm");
+const vinylDisc = document.getElementById("vinyl-disc");
+const needleHint = document.getElementById("needle-hint");
+const btnStart = document.getElementById("btn-start");
+
+const partTag = document.getElementById("part-tag");
+const qCurrent = document.getElementById("q-current");
+const progressFill = document.getElementById("progress-fill");
+const questionStage = document.getElementById("question-stage");
+const questionText = document.getElementById("question-text");
+const optionsList = document.getElementById("options-list");
+const btnPrev = document.getElementById("btn-prev");
+const btnRestart = document.getElementById("btn-restart");
+
+// 切换视图
+function switchView(targetView) {
+  [viewHome, viewQuiz, viewResult].forEach(v => {
+    v.classList.remove("active");
+    v.style.display = "none";
+  });
+  targetView.style.display = "flex";
+  // 触发重绘以执行淡入动画
+  requestAnimationFrame(() => {
+    targetView.classList.add("active");
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// 落针启动逻辑
+let isLaunching = false;
+function launchTest() {
+  if (isLaunching) return;
+  isLaunching = true;
+
+  tonearm.classList.add("dropped");
+  needleHint.innerHTML = "唱针已落入音轨 · <span>正在读取声波...</span>";
+
+  setTimeout(() => {
+    vinylDisc.classList.add("spinning");
+  }, 450);
+
+  setTimeout(() => {
+    currentIdx = 0;
+    answers.fill(null);
+    renderQuestion(false);
+    switchView(viewQuiz);
+    isLaunching = false;
+  }, 1350);
+}
+
+tonearm.addEventListener("click", launchTest);
+vinylDisc.addEventListener("click", launchTest);
+btnStart.addEventListener("click", launchTest);
+
+// 渲染题目
+function renderQuestion(animate = true) {
+  const item = QUESTIONS[currentIdx];
+  const letters = ["A", "B", "C", "D"];
+
+  const updateDOM = () => {
+    partTag.textContent = item.part;
+    qCurrent.textContent = String(currentIdx + 1).padStart(2, "0");
+    progressFill.style.width = `${((currentIdx + 1) / QUESTIONS.length) * 100}%`;
+    questionText.textContent = item.q;
+    btnPrev.disabled = currentIdx === 0;
+
+    optionsList.innerHTML = "";
+    item.opts.forEach((opt, i) => {
+      const btn = document.createElement("button");
+      btn.className = "option-card";
+      if (answers[currentIdx] === i) {
+        btn.classList.add("selected");
+      }
+      btn.innerHTML = `
+        <span class="opt-letter">${letters[i]}</span>
+        <span class="opt-text">${opt.text}</span>
+      `;
+      btn.addEventListener("click", () => handleSelect(i, btn));
+      optionsList.appendChild(btn);
+    });
+  };
+
+  if (animate) {
+    questionStage.classList.add("fade-out");
+    setTimeout(() => {
+      updateDOM();
+      questionStage.classList.remove("fade-out");
+    }, 220);
+  } else {
+    updateDOM();
+  }
+}
+
+// 选择答案
+function handleSelect(optIndex, cardEl) {
+  if (isTransitioning) return;
+  isTransitioning = true;
+
+  answers[currentIdx] = optIndex;
+  document.querySelectorAll(".option-card").forEach(el => el.classList.remove("selected"));
+  cardEl.classList.add("selected");
+
+  setTimeout(() => {
+    if (currentIdx < QUESTIONS.length - 1) {
+      currentIdx++;
+      renderQuestion(true);
+      isTransitioning = false;
+    } else {
+      calculateAndShowResult();
+      isTransitioning = false;
+    }
+  }, 320);
+}
+
+// 上一题
+btnPrev.addEventListener("click", () => {
+  if (currentIdx > 0 && !isTransitioning) {
+    currentIdx--;
+    renderQuestion(true);
+  }
+});
+
+// 计算结果并渲染海报
+function calculateAndShowResult() {
+  const raw = { ritual: 0, live: 0, lyric: 0, niche: 0 };
+  const maxPossible = { ritual: 72, live: 58, lyric: 65, niche: 68 };
+
+  answers.forEach((ansIdx, qIdx) => {
+    if (ansIdx !== null) {
+      const s = QUESTIONS[qIdx].opts[ansIdx].s;
+      raw.ritual += s.ritual;
+      raw.live += s.live;
+      raw.lyric += s.lyric;
+      raw.niche += s.niche;
+    }
+  });
+
+  // 归一化为 0 - 100 指数（保底 28% 保证视觉美观）
+  const dims = {
+    ritual: Math.min(98, Math.max(28, Math.round((raw.ritual / maxPossible.ritual) * 100))),
+    live: Math.min(98, Math.max(26, Math.round((raw.live / maxPossible.live) * 100))),
+    lyric: Math.min(98, Math.max(28, Math.round((raw.lyric / maxPossible.lyric) * 100))),
+    niche: Math.min(98, Math.max(28, Math.round((raw.niche / maxPossible.niche) * 100)))
+  };
+
+  // 匹配人格
+  let matched = PERSONAS[PERSONAS.length - 1];
+  for (const p of PERSONAS) {
+    if (p.match(dims)) {
+      matched = p;
+      break;
+    }
+  }
+
+  document.getElementById("res-no").textContent = matched.no;
+  document.getElementById("res-title").textContent = matched.title;
+  document.getElementById("res-quote").textContent = matched.quote;
+  document.getElementById("res-desc").textContent = matched.desc;
+  document.getElementById("res-talent").textContent = matched.talent;
+  document.getElementById("res-partner").textContent = matched.partner;
+
+  const dimConfig = [
+    { label: "媒介仪式感", val: dims.ritual },
+    { label: "现场投入度", val: dims.live },
+    { label: "歌词共情力", val: dims.lyric },
+    { label: "小众挖掘欲", val: dims.niche }
+  ];
+
+  const dimsContainer = document.getElementById("res-dims");
+  dimsContainer.innerHTML = dimConfig.map(item => `
+    <div class="dim-row">
+      <span class="dim-label">${item.label}</span>
+      <div class="dim-track">
+        <div class="dim-fill" style="width: ${item.val}%"></div>
+      </div>
+      <span class="dim-val">${item.val}%</span>
+    </div>
+  `).join("");
+
+  switchView(viewResult);
+}
+
+// 重新测试
+btnRestart.addEventListener("click", () => {
+  tonearm.classList.remove("dropped");
+  vinylDisc.classList.remove("spinning");
+  needleHint.innerHTML = '轻触 <span>唱针</span> 落入音轨，开启聆听';
+  switchView(viewHome);
+});
+</script>
+</body>
+</html>
